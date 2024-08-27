@@ -25,7 +25,6 @@ class Action(APIView):
 
     '''
     def post(self, request):
-        print(request.META)
         try:
             ClientV.objects.get(ip=request.META['HTTP_X_REAL_IP'])
         except KeyError:
@@ -55,16 +54,15 @@ class Action(APIView):
 
 class DataValidation(APIView):
     def post(self, request):
-        # try:
-        #     client_IP=request.META['HTTP_X_REAL_IP']
-        #     ClientV.objects.get(ip=client_IP)
-        # except KeyError:
-        #     return Response(
-        #         'IP can not be recieved',
-        #         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        # except ObjectDoesNotExist:
-        #     return Response(status=status.HTTP_403_FORBIDDEN)
-        client_IP = '111'
+        try:
+            client_IP=request.META['HTTP_X_REAL_IP']
+            ClientV.objects.get(ip=client_IP)
+        except KeyError:
+            return Response(
+                'IP can not be recieved',
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_403_FORBIDDEN)
         
         serializer = ActionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

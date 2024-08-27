@@ -89,40 +89,17 @@ GROUP_MANAGEMENT = False
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-if DEBUG:
-    DATABASES = {
-        # 'default': {
-        #     'ENGINE': 'django.db.backends.sqlite3',
-        #     'NAME': BASE_DIR / 'db.sqlite3',
-        # },
-        'default': {
-            'ENGINE': 'mssql',
-            'NAME': env.str('DEBTHOR_DB_NAME'),
-            'USER': env.str('DEBTHOR_DB_USER'),
-            'PASSWORD': env.str('DEBTHOR_DB_PASSWORD'),
-            'HOST': env.str('DEBTHOR_DB_HOST'),
-            'PORT': env.str('DEBTHOR_DB_PORT'),
-        },
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': env.str('POSTGRES_DB'),
-            'USER': env.str('POSTGRES_USER'),
-            'PASSWORD': env.str('POSTGRES_PASSWORD'),
-            'HOST': env.str('POSTGRES_HOST', 'db_htss'),
-            'PORT': env.str('POSTGRES_PORT', '5432'),
-        },
-        'debthor_dbs': {
-            'ENGINE': 'mssql',
-            'NAME': env.str('DEBTHOR_DB_NAME'),
-            'USER': env.str('DEBTHOR_DB_USER'),
-            'PASSWORD': env.str('DEBTHOR_DB_PASSWORD'),
-            'HOST': env.str('DEBTHOR_DB_HOST'),
-            'PORT': env.str('DEBTHOR_DB_PORT'),
-        },
-    }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'mssql',
+        'NAME': env.str('DEBTHOR_DB_NAME'),
+        'USER': env.str('DEBTHOR_DB_USER'),
+        'PASSWORD': env.str('DEBTHOR_DB_PASSWORD'),
+        'HOST': env.str('DEBTHOR_DB_HOST'),
+        'PORT': env.str('DEBTHOR_DB_PORT'),
+    },
+}
 
 DATABASE_CONNECTION_POOLING = False
 

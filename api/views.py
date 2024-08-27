@@ -25,6 +25,7 @@ class Action(APIView):
 
     '''
     def post(self, request):
+        print(request.META)
         try:
             ClientV.objects.using('debthor_dbs')\
                            .get(ip=request.META['HTTP_X_REAL_IP'])

@@ -1,0 +1,36 @@
+services:
+  htss-client-portal-web:
+    image: test-debtor-api
+    container_name: test-debtor-api
+    command: gunicorn -w 1 -b 0.0.0.0:8082 web.wsgi:application --access-logfile - --error-logfile -
+    env_file: .env
+    depends_on:
+      - django_migrate
+    restart: always
+    ports:
+      - 8081:8081
+
+  django_collectstatic:
+    image: test-debtor-api
+    container_name: test-debtor-api-collectstatic
+    command: python3 manage.py collectstatic --noinput
+    volumes:
+      - staticfiles:/app/staticfiles
+    env_file: .env
+
+  django_migrate:
+    image: test-debtor-api
+    container_name: test-debtor-api-migrate
+    command: python3 manage.py migrate --noinput
+    env_file: .env
+    depends_on:
+      db_htss:
+        condition: service_healthy
+  
+volumes:
+  staticfiles:
+     driver_opts:
+           type: none
+           device: /var/www/test-debtor-api/staticfiles
+           o: bind
+  

@@ -56,13 +56,17 @@ class DataValidation(APIView):
     def post(self, request):
         try:
             client_IP=request.META['HTTP_X_REAL_IP']
+            print('111')
             ClientV.objects.get(ip=client_IP)
+            print('222')
         except KeyError:
             return Response(
                 'IP can not be recieved',
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_403_FORBIDDEN)
+        
+        print(client_IP)
         
         serializer = ActionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -75,8 +79,10 @@ class DataValidation(APIView):
             @p_persons_identity_card2={serializer.validated_data['persons_identity_card2']},
             @p_application_date={serializer.validated_data['application_date'] or 'null'},
             @p_client_IP={client_IP}'''
-
+        print('params --- ', params)
 
         with connection.cursor() as cursor:
+            print('333')
             cursor.execute(f'EXEC dbo.spap_req_verif {params}')
+            print('444')
             return(Response(cursor.fetchall()))

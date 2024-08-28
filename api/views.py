@@ -56,9 +56,7 @@ class DataValidation(APIView):
     def post(self, request):
         try:
             client_IP=request.META['HTTP_X_REAL_IP']
-            print('111')
             ClientV.objects.get(ip=client_IP)
-            print('222')
         except KeyError:
             return Response(
                 'IP can not be recieved',
@@ -66,23 +64,20 @@ class DataValidation(APIView):
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_403_FORBIDDEN)
         
-        print(client_IP)
-        
         serializer = ActionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        params = f'''
-            @p_id={serializer.validated_data['id'] or 'null'},
-            @p_phone_number={serializer.validated_data['phone_number']},
-            @p_email={serializer.validated_data['email']},
-            @p_persons_identity_card1={serializer.validated_data['persons_identity_card1']},
-            @p_persons_identity_card2={serializer.validated_data['persons_identity_card2']},
-            @p_application_date={serializer.validated_data['application_date'] or 'null'},
-            @p_client_IP={client_IP}'''
-        print('params --- ', params)
+        client_IP='127.0.0.1'
+        params = (serializer.validated_data['id'],
+                  serializer.validated_data['phone_number'],
+                  serializer.validated_data["email"],
+                  serializer.validated_data['persons_identity_card1'],
+                  serializer.validated_data['persons_identity_card2'],
+                  serializer.validated_data['application_date'],
+                  client_IP)
+
+        sql_request = 'EXEC dbo.spap_req_verif %s,%s,%s,%s,%s,%s,%s'
 
         with connection.cursor() as cursor:
-            print('333')
-            cursor.execute(f'EXEC dbo.spap_req_verif {params}')
-            print('444')
+            cursor.execute(sql_request, params)
             return(Response(cursor.fetchall()))

@@ -34,7 +34,12 @@ DEBUG = env.bool('DEBUG', False)
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', ['127.0.0.1', 'localhost'])
 
-CSRF_TRUSTED_ORIGINS  = env.list('CSRF_TRUSTED_ORIGINS', ['https://127.0.0.1'])
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', ['https://127.0.0.1'])
+
+SECURE_SSL_REDIRECT = \
+    env.str('SECURE_SSL_REDIRECT', '0').lower() in ['true', 't', '1']
+if SECURE_SSL_REDIRECT:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
@@ -159,8 +164,8 @@ USE_TZ = True
 DEFAULT_FILE_STORAGE = 'web.azure_storage.AzureMediaStorage'
 STATICFILES_STORAGE = 'web.azure_storage.AzureStaticStorage'
 
-AZURE_ACCOUNT_NAME = os.getenv('AZURE_ACCOUNT_NAME')
-AZURE_ACCOUNT_KEY = os.getenv('AZURE_ACCOUNT_KEY')
+AZURE_ACCOUNT_NAME = env.str('AZURE_ACCOUNT_NAME')
+AZURE_ACCOUNT_KEY = env.str('AZURE_ACCOUNT_KEY')
 AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
 
 STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/static/'

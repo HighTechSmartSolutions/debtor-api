@@ -66,6 +66,7 @@ class DataValidation(APIView):
         
         serializer = ActionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        client_IP = '111'
         
         params = (serializer.validated_data['id'],
                   serializer.validated_data['phone_number'],

@@ -54,19 +54,15 @@ class Action(APIView):
 
 class DataValidation(APIView):
     def post(self, request):
-        print(request.META)
-        return Response(
-                request.META,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        try:
-            client_IP=request.META['HTTP_X_FORWARDED_FOR']
-            ClientV.objects.get(ip=client_IP)
-        except KeyError:
-            return Response(
-                request.META,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except ObjectDoesNotExist:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+        # try:
+        #     client_IP=request.META['HTTP_X_FORWARDED_FOR']
+        #     ClientV.objects.get(ip=client_IP)
+        # except KeyError:
+        #     return Response(
+        #         'IP can not be recieved',
+        #         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # except ObjectDoesNotExist:
+        #     return Response(status=status.HTTP_403_FORBIDDEN)
         
         serializer = ActionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

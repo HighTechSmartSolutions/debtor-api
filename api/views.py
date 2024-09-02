@@ -54,6 +54,7 @@ class Action(APIView):
 
 class DataValidation(APIView):
     def post(self, request):
+        print(request.META)
         return Response(
                 request.META,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)

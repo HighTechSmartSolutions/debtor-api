@@ -55,11 +55,11 @@ class Action(APIView):
 class DataValidation(APIView):
     def post(self, request):
         try:
-            client_IP=request.META['HTTP_X_REAL_IP']
+            client_IP=request.META['HTTP_X_FORWARDED_FOR']
             ClientV.objects.get(ip=client_IP)
         except KeyError:
             return Response(
-                request.META,
+                f'IP can not be recieved',
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_403_FORBIDDEN)

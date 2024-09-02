@@ -59,15 +59,14 @@ class DataValidation(APIView):
             ClientV.objects.get(ip=client_IP)
         except KeyError:
             return Response(
-                'IP can not be recieved',
+                request.META,
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_403_FORBIDDEN)
         
         serializer = ActionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        client_IP='127.0.0.1'
+        
         params = (serializer.validated_data['id'],
                   serializer.validated_data['phone_number'],
                   serializer.validated_data["email"],

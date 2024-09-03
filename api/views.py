@@ -5,7 +5,7 @@ from django.db import connection
 from api.models import VerificationV, ClientV
 from rest_framework.response import Response
 from rest_framework.views import APIView, status
-from api.serializers import ActionSerializer, DataRequestSerializer, VerificationVSerializer
+from api.serializers import DataRequestSerializer, VerificationVSerializer
 
 
 logger = logging.getLogger(__name__)

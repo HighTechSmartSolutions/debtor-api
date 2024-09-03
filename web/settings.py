@@ -164,8 +164,8 @@ USE_TZ = True
 DEFAULT_FILE_STORAGE = 'web.azure_storage.AzureMediaStorage'
 STATICFILES_STORAGE = 'web.azure_storage.AzureStaticStorage'
 
-AZURE_ACCOUNT_NAME = env.str('AZURE_ACCOUNT_NAME')
-AZURE_ACCOUNT_KEY = env.str('AZURE_ACCOUNT_KEY')
+AZURE_ACCOUNT_NAME = env.str('AZURE_ACCOUNT_NAME', '')
+AZURE_ACCOUNT_KEY = env.str('AZURE_ACCOUNT_KEY', '')
 AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
 
 STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/static/'

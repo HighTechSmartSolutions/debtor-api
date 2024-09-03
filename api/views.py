@@ -5,7 +5,7 @@ from django.db import connection
 from api.models import VerificationV, ClientV
 from rest_framework.response import Response
 from rest_framework.views import APIView, status
-from api.serializers import ActionSerializer, VerificationVSerializer
+from api.serializers import ActionSerializer, DataRequestSerializer, VerificationVSerializer
 
 
 logger = logging.getLogger(__name__)
@@ -68,35 +68,36 @@ class DataValidation(APIView):
         ch.setFormatter(formater)
         logger.addHandler(ch)
         
-        logger.info('Start DataValidation')
-
+        logger.info('Start IP validation')
         try:
-            logger.info('Start IP validation')
             client_IP=request.META['HTTP_X_CLIENT_IP']
-            logger.info(f'Client IP - {client_IP}')
-            ClientV.objects.get(ip=client_IP)
         except KeyError:
             logger.exception('Meta key error')
-            return Response(
-                'IP can not be recieved',
+            return Response('IP can not be recieved',
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        logger.info(f'Client IP - {client_IP}')
+        try:
+            ClientV.objects.get(ip=client_IP)
         except ObjectDoesNotExist:
             logger.exception('IP is not set in the DB')
             return Response(status=status.HTTP_403_FORBIDDEN)
         
-        serializer = ActionSerializer(data=request.data)
+        serializer = DataRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        # client_IP = '111'
+
+        parameters = serializer.validated_data['Parameters']
         
-        params = (serializer.validated_data['id'],
-                  serializer.validated_data['phone_number'],
-                  serializer.validated_data["email"],
-                  serializer.validated_data['persons_identity_card1'],
-                  serializer.validated_data['persons_identity_card2'],
-                  serializer.validated_data['application_date'],
+        params = (parameters['id'],
+                  parameters['phone_number'],
+                  parameters['email'],
+                  parameters['persons_identity_card1'],
+                  parameters['persons_identity_card2'],
+                  parameters['application_date'],
+                  serializer.validated_data['Type'],
                   client_IP)
 
-        sql_request = 'EXEC dbo.spap_req_verif %s,%s,%s,%s,%s,%s,%s'
+        sql_request = 'EXEC dbo.spap_req_verif %s,%s,%s,%s,%s,%s,%s,%s'
 
         with connection.cursor() as cursor:
             cursor.execute(sql_request, params)

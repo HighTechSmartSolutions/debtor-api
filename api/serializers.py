@@ -1,8 +1,8 @@
 from api.models import VerificationV
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 
 
-class ActionSerializer(ModelSerializer):
+class ParametersSerializer(serializers.ModelSerializer):
     class Meta:
         model = VerificationV
         fields = [
@@ -21,7 +21,12 @@ class ActionSerializer(ModelSerializer):
                         'application_date': {'required': True}}
 
 
-class VerificationVSerializer(ModelSerializer):
+class DataRequestSerializer(serializers.ModelSerializer):
+    Parameters = ParametersSerializer()
+    Type = serializers.CharField(max_length=200)
+
+
+class VerificationVSerializer(serializers.ModelSerializer):
     class Meta:
         model = VerificationV
         fields = "__all__"

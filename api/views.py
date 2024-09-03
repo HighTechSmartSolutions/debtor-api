@@ -1,9 +1,14 @@
+import logging
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import connection
 from api.models import VerificationV, ClientV
 from rest_framework.response import Response
 from rest_framework.views import APIView, status
 from api.serializers import ActionSerializer, VerificationVSerializer
+
+
+logger = logging.getLogger(__name__)
 
 
 class Action(APIView):
@@ -54,10 +59,21 @@ class Action(APIView):
 
 class DataValidation(APIView):
     def post(self, request):
+        logger.setLevel(logging.INFO)
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        fmtstr = '%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - %(message)s'
+        fmtdate = '%H:%M:%S'
+        formater = logging.Formatter(fmtstr, fmtdate)
+        ch.setFormatter(formater)
+        logger.addHandler(ch)
+        
+        logger.warning('Start DataValidation')
         try:
             client_IP=request.META['X-Client-IP']
             ClientV.objects.get(ip=client_IP)
         except KeyError:
+            logger.exception('Ошибка в DataValidation')
             return Response(
                 'IP can not be recieved',
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)

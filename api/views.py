@@ -68,18 +68,20 @@ class DataValidation(APIView):
         ch.setFormatter(formater)
         logger.addHandler(ch)
         
-        logger.warning('Start DataValidation')
+        logger.info('Start DataValidation')
+
         try:
-            print(request.META)
-            logger.warning(f'{key} --- {value}\n' for key, value in request.META.items())
+            logger.info('Start IP validation')
             client_IP=request.META['HTTP_X_CLIENT_IP']
+            logger.info(f'Client IP - {client_IP}')
             ClientV.objects.get(ip=client_IP)
         except KeyError:
-            logger.exception('Ошибка в DataValidation')
+            logger.exception('Meta key error')
             return Response(
                 'IP can not be recieved',
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except ObjectDoesNotExist:
+            logger.exception('IP is not set in the DB')
             return Response(status=status.HTTP_403_FORBIDDEN)
         
         serializer = ActionSerializer(data=request.data)

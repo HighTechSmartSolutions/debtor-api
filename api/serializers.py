@@ -21,9 +21,9 @@ class ParametersSerializer(serializers.ModelSerializer):
                         'application_date': {'required': True}}
 
 
-class DataRequestSerializer(serializers.ModelSerializer):
+class DataRequestSerializer(serializers.Serializer):
     Parameters = ParametersSerializer()
-    Type = serializers.CharField(max_length=200)
+    Type = serializers.CharField(max_length=50)
 
 
 class VerificationVSerializer(serializers.ModelSerializer):

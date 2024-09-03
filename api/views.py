@@ -72,7 +72,7 @@ class DataValidation(APIView):
         try:
             print(request.META)
             logger.warning(f'{key} --- {value}\n' for key, value in request.META.items())
-            client_IP=request.META['X-Client-IP']
+            client_IP=request.META['HTTP_X_CLIENT_IP']
             ClientV.objects.get(ip=client_IP)
         except KeyError:
             logger.exception('Ошибка в DataValidation')

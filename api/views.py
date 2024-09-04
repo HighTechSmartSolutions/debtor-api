@@ -35,6 +35,7 @@ class DataValidation(APIView):
         except ObjectDoesNotExist:
             logger.exception('IP is not set in the DB')
             return Response(status=status.HTTP_403_FORBIDDEN)
+        logger.info('IP validation completed')
         
         serializer = DataRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -47,8 +48,8 @@ class DataValidation(APIView):
                   parameters['persons_identity_card1'],
                   parameters['persons_identity_card2'],
                   parameters['application_date'],
-                  serializer.validated_data['Type'],
-                  client_IP)
+                  client_IP,
+                  serializer.validated_data['Type'])
 
         sql_request = 'EXEC dbo.spap_req_verif %s,%s,%s,%s,%s,%s,%s,%s'
 
